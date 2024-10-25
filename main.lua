@@ -4,6 +4,8 @@ require 'building'
 tileQuads = {} -- parts of the tileset used for different tiles
 
 local time = 0
+local playerStartX = 0 -- Starting position of the player
+local distanceTraveled -- Ending position of the player
 
 function love.load()
   width = 600
@@ -104,6 +106,11 @@ function love.load()
 
 
   shape = love.physics.newRectangleShape(450, 500, 100, 100)
+
+  --function for distance travel
+
+  playerStartX = body:getX()
+
 end
 
 function love.update(dt)
@@ -132,12 +139,20 @@ function love.update(dt)
   else
     body:applyLinearImpulse(100 * dt, 0)
   end
+
+  local playerX = body:getX() -- Get the current x position of the player
+  distanceTravelled = math.floor((playerX - playerStartX) / 15) -- round down to the nearest integer
 end
 
 function love.draw()
   love.graphics.draw(background, 0, 0, 0, 1.56, 1.56, 0, 200)
   love.graphics.setColor(255, 255, 255)
   love.graphics.print(text, 10, 10)
+
+    -- adding distance text
+  local distanceText = string.format("Distance: %d m", distanceTravelled) -- format distance
+  love.graphics.setColor(1, 1, 1)  -- white text
+  love.graphics.print(distanceText, love.graphics.getWidth() - 120, 10) -- print distance at the top right
 
   love.graphics.translate(width/2 - body:getX(), 0)
    
@@ -149,6 +164,7 @@ function love.draw()
 
   love.graphics.setColor(255, 255, 255)
   love.graphics.draw(tilesetBatch, 0, 0, 0, 1, 1)
+
 end
 
 function updateTilesetBatch()
