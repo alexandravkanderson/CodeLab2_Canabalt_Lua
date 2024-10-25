@@ -197,13 +197,14 @@ function beginContact(bodyA, bodyB, coll)
 
   print (text)
 
-  if(aData == "Player" or bData == "Player") then
-
+  if(aData == "Player" or bData == "Player" or aData == "building" or bData == "building") then
+    if (cx == 0) then
     onGround = true
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
     time = love.timer.getTime( )
     runSound:play()
+    end
 
   end
 end
