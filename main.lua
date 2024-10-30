@@ -84,7 +84,8 @@ function love.load()
   body:applyLinearImpulse(1000, 0)
 
   -- Set the collision callback.
-  world:setCallbacks(beginContact,endContact)
+  world:setCallbacks(beginContact,endContact, preSolve, postSolve)
+
 
   love.graphics.setNewFont(12)
   love.graphics.setBackgroundColor(155,155,155)
@@ -187,6 +188,18 @@ function love.keypressed( key, isrepeat )
   end
 end
 
+function preSolve(bodyA, bodyB, coll)
+  
+end
+
+function postSolve(a, b, coll, normalimpulse, tangentimpulse)
+  local aData=a:getUserData()
+  local bData=b:getUserData()
+  -- text = "Collision ended: " .. aData .. " and " .. bData
+  
+end
+
+
 -- This is called every time a collision begin.
 function beginContact(bodyA, bodyB, coll)
   local aData=bodyA:getUserData()
@@ -195,25 +208,27 @@ function beginContact(bodyA, bodyB, coll)
   cx,cy = coll:getNormal()
   -- text = text.."\n"..aData.." colliding with "..bData.." with a vector normal of: "..cx..", "..cy
 
-  -- print (text)
 
   if aData == "Player" and bData == "Crate" then
     local body = bodyB:getBody()
     bodyB:destroy()
-    body:setLinearVelocity(0, 45)
-    body:setAngularVelocity(60)
+    body:setLinearVelocity(10, 45)
+    body:setAngularVelocity(-45)
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
     time = love.timer.getTime()
+    return
   elseif bData == "Player" and aData == "Crate" then
     local body = bodyA:getBody()
     bodyA:destroy()
-    body:setLinearVelocity(0, 45)
-    body:setAngularVelocity(60)
+    body:setLinearVelocity(10, 45)
+    body:setAngularVelocity(-45)
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
     time = love.timer.getTime()
+    return
   end
+
 
   if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
     if cx == 0 then
@@ -222,6 +237,7 @@ function beginContact(bodyA, bodyB, coll)
       currentAnim:gotoFrame(1)
       time = love.timer.getTime()
       runSound:play()
+      text = text.."\n On the ground"
     end
   end
 end
@@ -236,6 +252,7 @@ function endContact(bodyA, bodyB, coll)
   if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
     runSound:stop();
     onGround = false
+    text = text.."\n In the air"
   end
 end
 
