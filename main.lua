@@ -183,7 +183,7 @@ function love.keypressed( key, isrepeat )
     body:applyLinearImpulse(0, -500)
     currentAnim = jumpAnim
     currentAnim:gotoFrame(1)
-    time = love.timer.getTime( )
+    time = love.timer.getTime()
   end
 end
 
@@ -193,31 +193,49 @@ function beginContact(bodyA, bodyB, coll)
   local bData =bodyB:getUserData()
 
   cx,cy = coll:getNormal()
-  text = text.."\n"..aData.." colliding with "..bData.." with a vector normal of: "..cx..", "..cy
+  -- text = text.."\n"..aData.." colliding with "..bData.." with a vector normal of: "..cx..", "..cy
 
-  print (text)
+  -- print (text)
 
-  if(aData == "Player" or bData == "Player" or aData == "building" or bData == "building") then
-    if (cx == 0) then
-    onGround = true
+  if aData == "Player" and bData == "Crate" then
+    local body = bodyB:getBody()
+    bodyB:destroy()
+    body:setLinearVelocity(0, 45)
+    body:setAngularVelocity(60)
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
-    time = love.timer.getTime( )
-    runSound:play()
-    end
+    time = love.timer.getTime()
+  elseif bData == "Player" and aData == "Crate" then
+    local body = bodyA:getBody()
+    bodyA:destroy()
+    body:setLinearVelocity(0, 45)
+    body:setAngularVelocity(60)
+    currentAnim = rollAnim
+    currentAnim:gotoFrame(1)
+    time = love.timer.getTime()
+  end
 
+  if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
+    if cx == 0 then
+      onGround = true
+      currentAnim = runAnim
+      currentAnim:gotoFrame(1)
+      time = love.timer.getTime()
+      runSound:play()
+    end
   end
 end
 
 -- This is called every time a collision end.
 function endContact(bodyA, bodyB, coll)
-  onGround = false
+  -- onGround = false
   local aData=bodyA:getUserData()
   local bData=bodyB:getUserData()
-  text = "Collision ended: " .. aData .. " and " .. bData
+  -- text = "Collision ended: " .. aData .. " and " .. bData
 
-  if(aData == "Player" or bData == "Player") then
+  if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
     runSound:stop();
+    onGround = false
   end
 end
 
