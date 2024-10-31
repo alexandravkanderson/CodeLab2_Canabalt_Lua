@@ -24,29 +24,42 @@ function building:makeBuilding(x, y, tileSize)
   return self
 end
 
-function building:setupBuilding(x, tileSize)
--- set up the building's properties
-  self.tileSize = tileSize  -- tile size
-  self.x = x                -- x position
-  self.y = 300              -- y position
+function building:setupBuilding(x, tileSize, previousBuilding) -- create a new building
 
-  self.width  = math.ceil((love.math.random( ) * 10) + 20) -- width of the building 20-30
-  self.height = math.ceil(5 + love.math.random( ) * 7) -- height of the building 5-12
+  local minSpacing = 50
+  local maxSpacing = 200
+  local spacing = love.math.random(minSpacing, maxSpacing) -- get a random spacing
+
+  self.tileSize = tileSize
+
+  if previousBuilding then -- if there is a previous building, check if too close
+    local previousEndX = previousBuilding.x + previousBuilding.width * previousBuilding.tileSize -- get the end of the previous building 
+    if x < previousEndX + spacing then -- if the new building is too close, move it to the right
+        x = previousEndX + spacing  -- move the building to the right
+    end
+  end
+
+  self.x = x
+  self.y = 300
+
+  self.width  = math.ceil((love.math.random( ) * 25) + 40)  -- get a random width for the building
+  self.height = math.ceil(5 + love.math.random( ) * 7)
   --self.height = 7
-  self.body = love.physics.newBody(world, 0, 0, "static") -- create a new physics body
+  self.body = love.physics.newBody(world, 0, 0, "static")
   self.shape = love.physics.newRectangleShape(self.x, self.y, 
                                               self.tileSize * self.width, 
-                                              self.tileSize * self.height) -- create a new rectangle shape
-  fixture = love.physics.newFixture(self.body, self.shape) -- create a new fixture for the body
-  fixture:setUserData("Building") -- set the user data for the fixture
+                                              self.tileSize * self.height)
+  fixture = love.physics.newFixture(self.body, self.shape)
+  fixture:setUserData("Building")
 end
 
 function building:update(body, dt, other_building)
--- update the building's position
-  if self.x + self.width/2 * self.tileSize < body:getX() then -- if the building is to the left of the player
-      self:setupBuilding( -- create a new building
-          other_building.x + other_building.width  * self.tileSize + 150, 
-          16) -- set the tile size
+  local screenLeftEdge = body:getX() - (width / 2)  -- get the left edge of the screen
+
+  if self.x + self.width * self.tileSize < screenLeftEdge then
+      self:setupBuilding(
+          other_building.x + other_building.width  * self.tileSize + (width/2 - 150), 
+          16) -- move the building to the right of the other building
   end
 end
 

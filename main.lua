@@ -65,7 +65,7 @@ function love.load()
   text = "hello World"
 
   building1 = building:makeBuilding(750, 16)
-  building2 = building:makeBuilding(1200, 16)
+  building2 = building:makeBuilding(1200, 16, building1) -- pass the instance of the previous building to the new building
 
   playerImg = love.graphics.newImage("media/player2.png")
   -- Create a Body for the player.
