@@ -80,7 +80,7 @@ function building:draw(tilesetBatch, tileQuads) -- draw the building
           else 
             num = math.floor(x + y + x1 + y1) -- calculate the number for the tile
             if (num)%5 == 0 then
-              --tilesetBatch:add(tileQuads[5], x1 + x * tileSize, y1 + y * tileSize, 0)
+              tilesetBatch:add(tileQuads[5], x1 + x * tileSize, y1 + y * tileSize, 0)
             else
               tilesetBatch:add(tileQuads[4], x1 + x * tileSize, y1 + y * tileSize, 0) -- add the middle tile
             end
