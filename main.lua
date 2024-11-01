@@ -6,6 +6,8 @@ tileQuads = {} -- parts of the tileset used for different tiles
 local time = 0
 local playerStartX = 0 -- Starting position of the player
 local distanceTraveled -- Ending position of the player
+local animationSpeedMultiplier = 0.01 -- Speed of the player
+local cachedPlayerX = 0.0 -- Cached player position
 
 function love.load()
   width = 600
@@ -126,8 +128,9 @@ function restartLevel()
   time = love.timer.getTime()
 end
 
+  
 function love.update(dt)
-  currentAnim:update(dt)
+  -- currentAnim:update(dt)
   world:update(dt)
 
   building1:update(body, dt, building2)
@@ -157,6 +160,15 @@ function love.update(dt)
 
   local playerX = body:getX() -- Get the current x position of the player
   distanceTravelled = math.floor((playerX - playerStartX) / 15) -- round down to the nearest integer
+
+  if currentAnim == runAnim then
+    currentAnim:update((playerX - cachedPlayerX) * animationSpeedMultiplier)
+    -- text = text.."\n"..(playerX - cachedPlayerX) * animationSpeedMultiplier
+  else
+    currentAnim:update(dt)
+  end
+  cachedPlayerX = playerX -- Cache the player position
+
 end
 
 function love.draw()
@@ -224,19 +236,19 @@ function beginContact(bodyA, bodyB, coll)
 
 
   if aData == "Player" and bData == "Crate" then
-    local body = bodyB:getBody()
+    local crateBody = bodyB:getBody()
     bodyB:destroy()
-    body:setLinearVelocity(10, 45)
-    body:setAngularVelocity(-45)
+    crateBody:setLinearVelocity(10, 45)
+    crateBody:setAngularVelocity(-45)
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
     time = love.timer.getTime()
     return
   elseif bData == "Player" and aData == "Crate" then
-    local body = bodyA:getBody()
+    local crateBody = bodyA:getBody()
     bodyA:destroy()
-    body:setLinearVelocity(10, 45)
-    body:setAngularVelocity(-45)
+    crateBody:setLinearVelocity(10, 45)
+    crateBody:setAngularVelocity(-45)
     currentAnim = rollAnim
     currentAnim:gotoFrame(1)
     time = love.timer.getTime()
