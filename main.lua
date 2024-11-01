@@ -69,8 +69,6 @@ function love.load()
   fixture:setUserData("Crate") -- Set a string userdata
   crate_body:setMassData(crate_box:computeMass( 1 ))
 
-  text = "hello World"
-
   building1 = building:makeBuilding(750, 16)
   building2 = building:makeBuilding(1200, 16, building1) -- pass the instance of the previous building to the new building
 
@@ -268,7 +266,7 @@ function beginContact(bodyA, bodyB, coll)
       currentAnim:gotoFrame(1)
       time = love.timer.getTime()
       runSound:play()
-      text = text.."\n On the ground"
+      --text = text.."\n On the ground"
     end
   end
 end
@@ -283,7 +281,7 @@ function endContact(bodyA, bodyB, coll)
   if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
     runSound:stop();
     onGround = false
-    text = text.."\n In the air"
+    --text = text.."\n In the air"
   end
 end
 
