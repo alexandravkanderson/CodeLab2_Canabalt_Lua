@@ -69,7 +69,7 @@ function love.load()
   fixture:setUserData("Crate") -- Set a string userdata
   crate_body:setMassData(crate_box:computeMass( 1 ))
 
-  text = "hello World"
+  text = "Canabalt"
 
   building1 = building:makeBuilding(750, 16)
   building2 = building:makeBuilding(1200, 16, building1) -- pass the instance of the previous building to the new building
@@ -129,7 +129,7 @@ function restartLevel()
   currentAnim = inAirAnim
   currentAnim:gotoFrame(1)
   building1 = building:makeBuilding(750, 16)
-  building2 = building:makeBuilding(1200, 16)
+  building2 = building:makeBuilding(1100, 16)
   time = love.timer.getTime()
 end
 
