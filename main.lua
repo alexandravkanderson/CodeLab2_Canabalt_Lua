@@ -114,8 +114,19 @@ function love.load()
 
 end
 
-function love.update(dt)
+function restartLevel()
+  -- Reinitialize the game state
+  body:setPosition(400, 100)
+  body:setLinearVelocity(0, 0)
+  body:applyLinearImpulse(1000, 0)
+  currentAnim = inAirAnim
+  currentAnim:gotoFrame(1)
+  building1 = building:makeBuilding(750, 16)
+  building2 = building:makeBuilding(1200, 16)
+  time = love.timer.getTime()
+end
 
+function love.update(dt)
   currentAnim:update(dt)
   world:update(dt)
 
@@ -124,21 +135,24 @@ function love.update(dt)
 
   updateTilesetBatch()
 
-  if(time < love.timer.getTime( ) - 0.25) and currentAnim == jumpAnim then
+  if(time < love.timer.getTime() - 0.25) and currentAnim == jumpAnim then
     currentAnim = inAirAnim
     currentAnim:gotoFrame(1)
   end
 
-  if (time < love.timer.getTime( ) - 0.5) and currentAnim == rollAnim then
+  if (time < love.timer.getTime() - 0.5) and currentAnim == rollAnim then
     currentAnim = runAnim
     currentAnim:gotoFrame(1)
   end
 
   if(currentAnim == runAnim) then
-    --print("ON GROUND")
     body:applyLinearImpulse(250 * dt, 0)
   else
     body:applyLinearImpulse(100 * dt, 0)
+  end
+
+  if body:getY() > 400 then
+    restartLevel()
   end
 
   local playerX = body:getX() -- Get the current x position of the player
