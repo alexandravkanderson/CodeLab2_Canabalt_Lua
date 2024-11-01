@@ -10,6 +10,11 @@ local animationSpeedMultiplier = 0.01 -- Speed of the player
 local cachedPlayerX = 0.0 -- Cached player position
 
 function love.load()
+  
+  -- BG Music - sound is the variable for the sound file. Audio plays the sound from the file source then streams it.
+  sound = love.audio.newSource("media/run.mp3", "stream")
+  love.audio.play(sound)
+
   width = 600
   height = 300
 
