@@ -268,7 +268,7 @@ function beginContact(bodyA, bodyB, coll)
       currentAnim:gotoFrame(1)
       time = love.timer.getTime()
       runSound:play()
-      text = text.."\n On the ground"
+      
     end
   end
 end
@@ -283,7 +283,7 @@ function endContact(bodyA, bodyB, coll)
   if (aData == "Player" and bData == "Building") or (bData == "Player" and aData == "Building") then
     runSound:stop();
     onGround = false
-    text = text.."\n In the air"
+    
   end
 end
 
